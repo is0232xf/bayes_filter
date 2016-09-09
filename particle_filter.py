@@ -121,10 +121,7 @@ if __name__ == "__main__":
         a_log.append(a)
         print "a =", a
 
-        if controller.is_terminated() is True:
-            bayes_filter.print_result(o_log, actual_s_log,
-                                      determined_s_log, a_log, t)
-            print "Finish"
+        if controller.is_terminated():
             break
 
         simulator.set_a(a)
@@ -135,4 +132,7 @@ if __name__ == "__main__":
         particle = estimator.update_p_s_bar(particle, a)
         particle_ratio = calculate_ratio_of_particle(particle)
         bayes_filter.show_p_s(particle_ratio)
-        print "before observe:", particle
+
+    bayes_filter.print_result(o_log, actual_s_log,
+                              determined_s_log, a_log, t)
+    print "Finish"
