@@ -47,7 +47,7 @@ class ParticleFilter(object):
             w_particle[i] = particle_counter[i] * p_o_s[i][o]
         print "w_particle:", w_particle
 
-        sum_w = sum(w_particle[i] for i in range(len(w_particle)))
+        sum_w = sum(w_particle)
 
         for i in range(len(w_particle)):
             new_w_particle[i] = (w_particle[i] / sum_w)
