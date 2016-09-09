@@ -146,9 +146,9 @@ def show_result(s, determined_s):
 
 
 def multinomial(p):
-    sum_p = sum(p)
-    assert(sum_p >= 1)
-    cum_sum = len(p)*[0]
+#    sum_p = sum(p)
+#    assert(sum_p >= 1)
+    cum_sum = len(p) * [0]
     cum_sum = calculate_cum_sum(p)
     K = len(cum_sum)
     u = random.random()
@@ -161,7 +161,7 @@ def multinomial(p):
 
 def calculate_cum_sum(p):
     K = len(p)
-    cum_sum = K*[0]
+    cum_sum = K * [0]
     for n in range(K):
         if n == 0:
             cum_sum[n] = p[n]
