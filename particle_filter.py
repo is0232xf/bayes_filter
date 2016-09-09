@@ -97,7 +97,7 @@ if __name__ == "__main__":
     a_log = []
     actual_s_log = []
     actual_s_log.append(0)
-    estimater = ParticleFilter()
+    estimator = ParticleFilter()
     simulator = bayes_filter.Simulator(p_s_a, p_o_s)
     goals = [4, 0]
     controller = Controller(goals)
@@ -112,7 +112,7 @@ if __name__ == "__main__":
         o = simulator.get_o()
         o_log.append(o)
         print "o =", o
-        particle = estimater.update_p_s(particle, particle_num, o)
+        particle = estimator.update_p_s(particle, particle_num, o)
         print collections.Counter(particle).most_common(1)
         determined_s = collections.Counter(particle).most_common(1)[0][0]
         determined_s_log.append(determined_s)
@@ -132,7 +132,7 @@ if __name__ == "__main__":
         actual_s_log.append(s)
         print "s =", s
         t = t + 1
-        particle = estimater.update_p_s_bar(particle, a)
+        particle = estimator.update_p_s_bar(particle, a)
         particle_ratio = calculate_ratio_of_particle(particle)
         bayes_filter.show_p_s(particle_ratio)
         print "before observe:", particle
