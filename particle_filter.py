@@ -35,27 +35,21 @@ class ParticleFilter(object):
 
     def update_p_s(self, particle, particle_num, o):
         self.p_o_s = p_o_s
-        w_particle = 5 * [0]
-        particle_counter = 5 * [0]
-        new_w_particle = 5 * [0]
+        weights = []
+        new_particle = []
+        new_w_particle = particle_num * [0]
 
-        for i in range(len(particle_counter)):
-            particle_counter[i] = particle.count(i)
-        print "particle_counter:", particle_counter
+        for s in particle:
+            weights.append(self.p_o_s[s][o])
+        sum_w = sum(weights)
 
-        for i in range(len(particle_counter)):
-            w_particle[i] = particle_counter[i] * p_o_s[i][o]
-        print "w_particle:", w_particle
+        for i, weight in enumerate(weights):
+            new_w_particle[i] = weight / sum_w
 
-        sum_w = sum(w_particle[i] for i in range(len(w_particle)))
-
-        for i in range(len(w_particle)):
-            new_w_particle[i] = (w_particle[i] / sum_w)
-        bayes_filter.show_p_s(new_w_particle)
-
-        for i in range(particle_num):
-            particle[i] = bayes_filter.multinomial(new_w_particle)
-        return particle
+        for _ in range(particle_num):
+            i = bayes_filter.multinomial(new_w_particle)
+            new_particle.append(particle[i])
+        return new_particle
 
 
 class Controller(object):
@@ -101,7 +95,7 @@ if __name__ == "__main__":
     simulator = bayes_filter.Simulator(p_s_a, p_o_s)
     goals = [4, 0]
     controller = Controller(goals)
-    particle_num = 100
+    particle_num = 1000
     w_particle = particle_num * [0]
     w_particle[0] = 1
     particle = particle_num * [0]
@@ -113,6 +107,8 @@ if __name__ == "__main__":
         o_log.append(o)
         print "o =", o
         particle = estimator.update_p_s(particle, particle_num, o)
+        particle_ratio = calculate_ratio_of_particle(particle)
+        bayes_filter.show_p_s(particle_ratio)
         print collections.Counter(particle).most_common(1)
         determined_s = collections.Counter(particle).most_common(1)[0][0]
         determined_s_log.append(determined_s)
