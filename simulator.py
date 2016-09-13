@@ -34,6 +34,7 @@ class Continuous1dSimulator(object):
     def get_s(self):
         return self._s
 
+
 def demo_continuous1d_simulator():
     std_a = 0.1
     std_o = 0.1
