@@ -6,7 +6,8 @@ Created on Fri Sep 09 16:09:40 2016
 """
 
 import random
-import matplotlib.pyplot as plt
+import continuous1d_particle_filter
+import bayes_filter
 
 
 class Continuous1dSimulator(object):
@@ -35,36 +36,54 @@ class Continuous1dSimulator(object):
         return self._s
 
 
-def demo_continuous1d_simulator():
+def calculate_average_place(particle):
+    avg = sum(particle) / len(particle)
+    return avg
+
+if __name__ == "__main__":
     std_a = 0.1
     std_o = 0.1
     var_a = std_a ** 2
     var_o = std_o ** 2
+    goals = [4, 0]
+    o_log = []
+    determined_s_log = []
+    a_log = []
+    actual_s_log = []
+    actual_s_log.append(0)
+    estimator = continuous1d_particle_filter.Continuous1dParticlefilter(
+        var_a, var_o)
     simulator = Continuous1dSimulator(var_a, var_o)
-    actions = [1] * 4 + [-1] * 4
-    s = [simulator.get_s()]
+    goals = [4, 0]
+    controller = continuous1d_particle_filter.Continuous1dControllor(goals)
+    particle_num = 1000
+    w_particle = particle_num * [0]
+    w_particle[0] = 1
+    particle = particle_num * [0]
+    t = 0
 
-    for a in actions:
-        simulator.set_a(a)
-        s.append(simulator.get_s())
+    while True:
+        print "step:", t, "##########################"
         o = simulator.get_o()
+        o_log.append(o[0])
+        print "o =", o
+        particle = estimator.update_p_s(particle, o)
+        determined_s = calculate_average_place(particle)
+        determined_s_log.append(determined_s)
 
-        print "s :", s[-1]
-        print "o :", o
+        a = controller.determine_a(determined_s)
+        a_log.append(a)
+        print "a =", a
 
-        plt.ylim([-5.0, 5.0])
-        plt.bar(range(len(o)), o, align='center')
-        plt.grid()
-        plt.show()
+        if controller.is_terminated():
+            break
 
-    plt.gca().invert_yaxis()
-    plt.xlabel("state")
-    plt.ylabel("time")
-    plt.xlim([-1.0, 5.0])
-    plt.plot(s, range(len(s)), "g--x", markersize=10)
-    plt.grid()
-    plt.show()
-
-
-if __name__ == "__main__":
-    demo_continuous1d_simulator()
+        simulator.set_a(a)
+        s = simulator.get_s()
+        actual_s_log.append(s)
+        print "s =", s
+        t = t + 1
+        particle = estimator.update_p_s_bar(particle, a)
+    bayes_filter.print_result(o_log, actual_s_log,
+                              determined_s_log, a_log, t)
+    print "Finish"
