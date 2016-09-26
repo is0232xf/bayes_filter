@@ -91,7 +91,7 @@ if __name__ == "__main__":
     actual_s_log.append(0)
     estimator = ParticleFilter(p_s_a, p_o_s)
     simulator = bayes_filter.Simulator(p_s_a, p_o_s)
-    goals = [4, 0, 3, 2, 2, 1, 0]
+    goals = [4, 0]
     controller = Controller(goals)
     particle_num = 1000
     w_particle = particle_num * [0]
