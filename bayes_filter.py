@@ -112,10 +112,15 @@ def print_result(o_log, actual_s_log, determined_s_log, a_log, t):
 def show_p_s(p_s):
     plt.ylim([0.0, 1.0])
     plt.bar(range(len(p_s)), p_s, align='center')
+    plt.xlabel("state")
+    plt.ylabel("existence probability")
     plt.show()
 
 
 def show_merged_result(s, determined_s):
+    plt.xlim(-1, 5)
+    plt.rcParams["font.size"] = 24
+    plt.tight_layout()
     plt.gca().invert_yaxis()
     plt.xlabel("state")
     plt.ylabel("time")
