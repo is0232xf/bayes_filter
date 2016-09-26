@@ -17,7 +17,7 @@ class Continuous1dControllor(object):
 
     def determine_a(self, determined_s):
         next_goal = self.goals[0]
-        eps = 0.5
+        eps = 0.3
         diff = next_goal - determined_s
         direction = np.sign(diff)
         distance = abs(diff)
