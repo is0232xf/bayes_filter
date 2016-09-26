@@ -41,8 +41,8 @@ def calculate_average_place(particle):
     return avg
 
 if __name__ == "__main__":
-    std_a = 0.1
-    std_o = 0.1
+    std_a = 0.3
+    std_o = 0.3
     var_a = std_a ** 2
     var_o = std_o ** 2
     goals = [4, 0]
