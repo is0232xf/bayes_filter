@@ -84,6 +84,8 @@ if __name__ == "__main__":
         print "s =", s
         t = t + 1
         particle = estimator.update_p_s_bar(particle, a)
+    bayes_filter.show_actual_s__result(actual_s_log)
+    bayes_filter.show_determined_s_result(determined_s_log)
     bayes_filter.print_result(o_log, actual_s_log,
                               determined_s_log, a_log, t)
     print "Finish"
