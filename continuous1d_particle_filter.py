@@ -12,12 +12,17 @@ import bayes_filter
 
 
 class Continuous1dControllor(object):
-    def __init__(self, goals):
+    def __init__(self, goals, eps):
         self.goals = goals
+        self.eps = eps
+
+    def determine_s(self, particle):
+        avg = sum(particle) / len(particle)
+        return avg
 
     def determine_next_goal(self, determined_s):
         next_goal = self.goals[0]
-        eps = 0.3
+        eps = self.eps
         diff = next_goal - determined_s
         distance = abs(diff)
 
