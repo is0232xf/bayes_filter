@@ -15,25 +15,28 @@ class Continuous1dControllor(object):
     def __init__(self, goals):
         self.goals = goals
 
-    def determine_a(self, determined_s):
+    def determine_next_goal(self, determined_s):
         next_goal = self.goals[0]
         eps = 0.3
         diff = next_goal - determined_s
-        direction = np.sign(diff)
         distance = abs(diff)
 
         if distance < eps:
             self.goals.pop(0)
-            if self.is_terminated() is False:
+            if self.is_terminal() is False:
                 next_goal = self.goals[0]
-            a = direction * distance
-        elif distance > eps:
-            a = direction * 1
-        else:
-            a = 0
+        return next_goal
+
+    def determine_a(self, determined_s):
+        next_goal = self.determine_next_goal(determined_s)
+        diff = next_goal - determined_s
+        direction = np.sign(diff)
+        distance = abs(diff)
+
+        a = direction * min(1, distance)
         return a
 
-    def is_terminated(self):
+    def is_terminal(self):
         return bayes_filter.is_empty(self.goals)
 
 
