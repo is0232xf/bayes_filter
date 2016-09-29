@@ -63,7 +63,6 @@ class Continuous1dParticlefilter(object):
         for s in particle:
             weights.append(norm.pdf(o[0], -s, self.std_o))
         sum_w = sum(weights)
-        weights = []
         new_particle = []
         new_w_particle = particle_num * [0]
 
