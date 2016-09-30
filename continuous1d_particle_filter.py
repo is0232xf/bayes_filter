@@ -51,26 +51,44 @@ class Continuous1dParticlefilter(object):
         self.std_o = var_o ** 0.5
         self.landmarks = landmarks
 
+#    def update_p_s_bar(self, particle, a):
+#        for i, s in enumerate(particle):
+#            new_s = random.gauss(s+a, self.std_a)
+#            particle[i] = new_s
+#        return particle
+
     def update_p_s_bar(self, particle, a):
-        for i, s in enumerate(particle):
-            new_s = random.gauss(s+a, self.std_a)
-            particle[i] = new_s
-        return particle
+        means = np.array(particle) + a
+        new_particles = np.random.normal(means, self.std_a)
+        return new_particles.tolist()
+
+#    def update_p_s(self, particle, o):
+#        particle_num = len(particle)
+#        weights = []
+#
+#        for s in particle:
+#            weights.append(norm.pdf(o[0], self.landmarks[0] - s, self.std_o))
+#        sum_w = sum(weights)
+#        new_particle = []
+#        new_w_particle = particle_num * [0]
+#
+#        for i, weight in enumerate(weights):
+#            new_w_particle[i] = weight / sum_w
+#
+#        for _ in range(particle_num):
+#            i = bayes_filter.multinomial(new_w_particle)
+#            new_particle.append(particle[i])
+#        return new_particle
 
     def update_p_s(self, particle, o):
         particle_num = len(particle)
         weights = []
 
-        for s in particle:
-            weights.append(norm.pdf(o[0], self.landmarks[0] - s, self.std_o))
-        sum_w = sum(weights)
-        new_particle = []
-        new_w_particle = particle_num * [0]
+        particle = np.array(particle)
+        weights = norm.pdf(o[0], self.landmarks[0] - particle, self.std_o)
 
-        for i, weight in enumerate(weights):
-            new_w_particle[i] = weight / sum_w
+        new_w_particle = weights / weights.sum()
 
-        for _ in range(particle_num):
-            i = bayes_filter.multinomial(new_w_particle)
-            new_particle.append(particle[i])
-        return new_particle
+        indices = np.random.choice(particle_num, particle_num,
+                                   p=new_w_particle)
+        return particle[indices].tolist()
