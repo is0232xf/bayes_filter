@@ -66,7 +66,7 @@ def calculate_rms(actual_s_log, determined_s_log):
 
 if __name__ == "__main__":
     std_a = 0.3
-    std_o = 0.3
+    std_o = 0.5
     var_a = std_a ** 2
     var_o = std_o ** 2
     allowable_range = 0.3
