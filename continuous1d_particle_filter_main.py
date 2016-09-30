@@ -82,7 +82,7 @@ if __name__ == "__main__":
     goals = [4, 0]
     controller = continuous1d_particle_filter.Continuous1dControllor(
         goals, allowable_range)
-    particle_num = 10000
+    particle_num = 1000
     w_particle = particle_num * [0]
     w_particle[0] = 1
     particle = particle_num * [0]
