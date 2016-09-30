@@ -12,9 +12,9 @@ import bayes_filter
 
 
 class Continuous1dControllor(object):
-    def __init__(self, goals, eps):
+    def __init__(self, goals, allowable_range):
         self.goals = goals
-        self.eps = eps
+        self.allowable_range = allowable_range
 
     def determine_s(self, particle):
         avg = sum(particle) / len(particle)
@@ -22,11 +22,11 @@ class Continuous1dControllor(object):
 
     def determine_next_goal(self, determined_s):
         next_goal = self.goals[0]
-        eps = self.eps
+        allowable_range = self.allowable_range
         diff = next_goal - determined_s
         distance = abs(diff)
 
-        if distance < eps:
+        if distance < allowable_range:
             self.goals.pop(0)
             if self.is_terminal() is False:
                 next_goal = self.goals[0]
