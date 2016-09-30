@@ -46,10 +46,10 @@ class Continuous1dControllor(object):
 
 
 class Continuous1dParticlefilter(object):
-    def __init__(self, var_a, var_o):
+    def __init__(self, var_a, var_o, landmarks):
         self.std_a = var_a ** 0.5
         self.std_o = var_o ** 0.5
-        self.landmarks = [0, 1, 2, 3, 4]
+        self.landmarks = landmarks
 
     def update_p_s_bar(self, particle, a):
         for i, s in enumerate(particle):
