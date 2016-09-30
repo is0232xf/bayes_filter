@@ -5,9 +5,9 @@ Created on Wed Sep 28 11:07:10 2016
 @author: Fujiichang
 """
 
+import math
 import matplotlib.pyplot as plt
 import continuous1d_particle_filter
-import bayes_filter
 import continuous1d_simulator
 
 
@@ -15,6 +15,7 @@ def show_particle_distribution(particle, s, determined_s, title,
                                ylabel="density"):
     plt.plot(s, 0.2, 'r*', markersize=20)
     plt.plot(determined_s, 0.2, 'o', markersize=20)
+    plt.grid()
     plt.hist(particle, bins=20, normed=True, histtype='stepfilled')
     plt.title(title)
     plt.xlabel("state")
@@ -22,6 +23,54 @@ def show_particle_distribution(particle, s, determined_s, title,
     plt.xlim(-1, 5)
     plt.ylim(0, 2)
     plt.show()
+
+
+def show_actual_s__result(s):
+    plt.xlim(-1, 5)
+    plt.grid()
+    plt.rcParams["font.size"] = 24
+    plt.tight_layout()
+    plt.gca().invert_yaxis()
+    plt.xlabel("state")
+    plt.ylabel("time")
+    plt.plot(s, range(len(s)), "g--x", markersize=10)
+    plt.show()
+
+
+def show_determined_s_result(determined_s):
+    plt.xlim(-1, 5)
+    plt.grid()
+    plt.rcParams["font.size"] = 24
+    plt.tight_layout()
+    plt.gca().invert_yaxis()
+    plt.xlabel("state")
+    plt.ylabel("time")
+    plt.plot(determined_s, range(len(determined_s)), "-+", markersize=10)
+    plt.show()
+
+
+def show_merged_result(s, determined_s):
+    plt.xlim(-1, 5)
+    plt.rcParams["font.size"] = 24
+    plt.tight_layout()
+    plt.gca().invert_yaxis()
+    plt.xlabel("state")
+    plt.ylabel("time")
+    plt.plot(determined_s, range(len(determined_s)), "-+", markersize=10)
+    plt.plot(s, range(len(s)), "g--x", markersize=10)
+#    plt.legend(['determined_s', 'actual_s'])
+    plt.grid()
+    plt.show()
+
+
+def calculate_rms(time, actual_s_log, determined_s_log):
+    accidental_error = []
+    for t in range(time):
+        accidental_error.append(abs(actual_s_log[t] - determined_s_log[t])**2)
+    sum_a = sum(accidental_error)
+#    print sum_a
+    rms = math.sqrt(sum_a)
+    return rms
 
 if __name__ == "__main__":
     std_a = 0.3
@@ -59,6 +108,7 @@ if __name__ == "__main__":
         show_particle_distribution(particle, s, determined_s,
                                    "after observation", "$bel(s_t)$")
         print "detemined_s =", determined_s
+        print "          s =", s
 
         a = controller.determine_a(determined_s)
         a_log.append(a)
@@ -76,8 +126,8 @@ if __name__ == "__main__":
         show_particle_distribution(particle, s, determined_s,
                                    "before observation",
                                    "$\overline{bel}(s_t)$")
-    bayes_filter.show_actual_s__result(actual_s_log)
-    bayes_filter.show_determined_s_result(determined_s_log)
-    bayes_filter.print_result(o_log, actual_s_log,
-                              determined_s_log, a_log, t)
+    show_actual_s__result(actual_s_log)
+    show_determined_s_result(determined_s_log)
+    show_merged_result(actual_s_log, determined_s_log)
+    print "RMS =",  calculate_rms(t, actual_s_log, determined_s_log)
     print "Finish"
