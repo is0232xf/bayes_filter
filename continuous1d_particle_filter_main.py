@@ -47,9 +47,10 @@ def show_merged_result(s, determined_s):
     plt.gca().invert_yaxis()
     plt.xlabel("state")
     plt.ylabel("time")
-    plt.plot(determined_s, range(len(determined_s)), "-+", markersize=10)
-    plt.plot(s, range(len(s)), "g--x", markersize=10)
-#    plt.legend(['determined_s', 'actual_s'])
+    plt.plot(determined_s, range(len(determined_s)), "-+", markersize=10,
+             label="determined_s")
+    plt.plot(s, range(len(s)), "g--x", markersize=10, label="actual_s")
+    plt.legend(loc='upper right', fontsize=12)
     plt.grid()
     plt.show()
 
