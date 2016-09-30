@@ -49,6 +49,7 @@ class Continuous1dParticlefilter(object):
     def __init__(self, var_a, var_o):
         self.std_a = var_a ** 0.5
         self.std_o = var_o ** 0.5
+        self.landmarks = [0, 1, 2, 3, 4]
 
     def update_p_s_bar(self, particle, a):
         for i, s in enumerate(particle):
@@ -61,7 +62,7 @@ class Continuous1dParticlefilter(object):
         weights = []
 
         for s in particle:
-            weights.append(norm.pdf(o[0], -s, self.std_o))
+            weights.append(norm.pdf(o[0], self.landmarks[0] - s, self.std_o))
         sum_w = sum(weights)
         new_particle = []
         new_w_particle = particle_num * [0]
