@@ -7,7 +7,6 @@ Created on Fri Sep 09 19:08:12 2016
 
 import numpy as np
 from scipy.stats import norm
-import random
 import bayes_filter
 
 
@@ -49,46 +48,29 @@ class Continuous1dParticlefilter(object):
     def __init__(self, var_a, var_o, landmarks):
         self.std_a = var_a ** 0.5
         self.std_o = var_o ** 0.5
-        self.landmarks = landmarks
-
-#    def update_p_s_bar(self, particle, a):
-#        for i, s in enumerate(particle):
-#            new_s = random.gauss(s+a, self.std_a)
-#            particle[i] = new_s
-#        return particle
+        self.landmarks = np.array(landmarks).reshape(-1, 1)
 
     def update_p_s_bar(self, particle, a):
         means = np.array(particle) + a
         new_particles = np.random.normal(means, self.std_a)
         return new_particles.tolist()
 
-#    def update_p_s(self, particle, o):
-#        particle_num = len(particle)
-#        weights = []
-#
-#        for s in particle:
-#            weights.append(norm.pdf(o[0], self.landmarks[0] - s, self.std_o))
-#        sum_w = sum(weights)
-#        new_particle = []
-#        new_w_particle = particle_num * [0]
-#
-#        for i, weight in enumerate(weights):
-#            new_w_particle[i] = weight / sum_w
-#
-#        for _ in range(particle_num):
-#            i = bayes_filter.multinomial(new_w_particle)
-#            new_particle.append(particle[i])
-#        return new_particle
-
     def update_p_s(self, particle, o):
         particle_num = len(particle)
         weights = []
-
+        l = len(self.landmarks)
         particle = np.array(particle)
-        weights = norm.pdf(o[0], self.landmarks[0] - particle, self.std_o)
+        o_l = np.array(o[:l]).reshape(-1, 1)
 
-        new_w_particle = weights / weights.sum()
+        distance = self.landmarks[:l]-particle
+        weights = norm.pdf(o_l, distance, self.std_o)
+        p_weights = np.prod(weights, axis=0)
 
-        indices = np.random.choice(particle_num, particle_num,
-                                   p=new_w_particle)
-        return particle[indices].tolist()
+        new_w_particle = p_weights / p_weights.sum()
+
+        new_particle = []
+
+        for _ in range(particle_num):
+            i = bayes_filter.multinomial(new_w_particle)
+            new_particle.append(particle[i])
+        return new_particle
