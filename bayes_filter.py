@@ -184,7 +184,7 @@ def multinomial(p):
     for k in range(K):
         if u <= cum_sum[k]:
             return k
-    return k - 1
+    return k
 
 
 def calculate_cum_sum(p):
