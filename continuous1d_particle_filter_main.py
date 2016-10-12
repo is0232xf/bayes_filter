@@ -60,7 +60,6 @@ def calculate_rms(actual_s_log, determined_s_log):
     for t in range(len(actual_s_log)):
         accidental_error.append(abs(actual_s_log[t] - determined_s_log[t])**2)
     sum_a = sum(accidental_error)
-#    print sum_a
     rms = math.sqrt(sum_a)
     return rms
 
