@@ -21,20 +21,19 @@ p_s_a = [[[1, 0, 0, 0, 0], [0.9, 0.1, 0, 0, 0], [0, 0.9, 0.1, 0, 0], [0, 0, 0.9,
 
 
 class ParticleFilter(object):
-    def __init__(self):
+    def __init__(self, p_s_a, p_o_s):
         self.p_s_a = p_s_a
         self.p_o_s = p_o_s
 
     def update_p_s_bar(self, particle, a):
-        for i in range(len(particle)):
-            s = particle[i]
+        for i, s in enumerate(particle):
             p_s = self.p_s_a[a][s]
             new_s = bayes_filter.multinomial(p_s)
             particle[i] = new_s
         return particle
 
-    def update_p_s(self, particle, particle_num, o):
-        self.p_o_s = p_o_s
+    def update_p_s(self, particle, o):
+        particle_num = len(particle)
         weights = []
         new_particle = []
         new_w_particle = particle_num * [0]
@@ -53,7 +52,6 @@ class ParticleFilter(object):
 
 
 class Controller(object):
-
     def __init__(self, goals):
         self.goals = goals
 
@@ -91,7 +89,7 @@ if __name__ == "__main__":
     a_log = []
     actual_s_log = []
     actual_s_log.append(0)
-    estimator = ParticleFilter()
+    estimator = ParticleFilter(p_s_a, p_o_s)
     simulator = bayes_filter.Simulator(p_s_a, p_o_s)
     goals = [4, 0]
     controller = Controller(goals)
@@ -106,7 +104,7 @@ if __name__ == "__main__":
         o = simulator.get_o()
         o_log.append(o)
         print "o =", o
-        particle = estimator.update_p_s(particle, particle_num, o)
+        particle = estimator.update_p_s(particle, o)
         particle_ratio = calculate_ratio_of_particle(particle)
         bayes_filter.show_p_s(particle_ratio)
         print collections.Counter(particle).most_common(1)

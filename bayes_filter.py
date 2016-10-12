@@ -112,16 +112,44 @@ def print_result(o_log, actual_s_log, determined_s_log, a_log, t):
 def show_p_s(p_s):
     plt.ylim([0.0, 1.0])
     plt.bar(range(len(p_s)), p_s, align='center')
+    plt.xlabel("state")
+    plt.ylabel("existence probability")
     plt.show()
 
 
 def show_merged_result(s, determined_s):
+    plt.xlim(-1, 5)
+    plt.rcParams["font.size"] = 24
+    plt.tight_layout()
     plt.gca().invert_yaxis()
     plt.xlabel("state")
     plt.ylabel("time")
     plt.plot(determined_s, range(len(determined_s)), "-+", markersize=10)
     plt.plot(s, range(len(s)), "g--x", markersize=10)
-    plt.legend(['determined_s', 'actual_s'])
+#    plt.legend(['determined_s', 'actual_s'])
+    plt.grid()
+    plt.show()
+
+
+def show_actual_s__result(s):
+    plt.xlim(-1, 5)
+    plt.rcParams["font.size"] = 24
+    plt.tight_layout()
+    plt.gca().invert_yaxis()
+    plt.xlabel("state")
+    plt.ylabel("time")
+    plt.plot(s, range(len(s)), "g--x", markersize=10)
+    plt.show()
+
+
+def show_determined_s_result(determined_s):
+    plt.xlim(-1, 5)
+    plt.rcParams["font.size"] = 24
+    plt.tight_layout()
+    plt.gca().invert_yaxis()
+    plt.xlabel("state")
+    plt.ylabel("time")
+    plt.plot(determined_s, range(len(determined_s)), "-+", markersize=10)
     plt.show()
 
 
@@ -156,7 +184,7 @@ def multinomial(p):
     for k in range(K):
         if u <= cum_sum[k]:
             return k
-    return k - 1
+    return k
 
 
 def calculate_cum_sum(p):
@@ -228,6 +256,8 @@ if __name__ == '__main__':
         a = controller.determine_a(p_s, determined_s_log)
 
         if controller.is_terminated() is True:
+            show_actual_s__result(actual_s_log)
+            show_determined_s_result(determined_s_log)
             print_result(o_log, actual_s_log, determined_s_log, a_log, t)
             break
 
