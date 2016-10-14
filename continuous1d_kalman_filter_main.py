@@ -66,11 +66,18 @@ def calculate_rms(actual_s_log, determined_s_log):
 
 if __name__ == "__main__":
     std_a = 0.3
-    std_o = 0.5
+    std_o = 0.1
     std_s = 0.5
     var_a = std_a ** 2
     var_o = std_o ** 2
-    var_s = std_s ** 2
+    # alpha is precision of state distribution
+    alpha = (std_s ** 2) ** -1
+    # beta is precision of motion model variance
+    beta = (std_a ** 2) ** -1
+    # gamma is precision of observation model variance
+    gamma = (std_o ** 2) ** -1
+    mu_bar = 0
+    alpha_bar = 0.05
     allowable_range = 0.3
     o_log = []
     determined_s_log = []
@@ -80,11 +87,10 @@ if __name__ == "__main__":
     simulator = continuous1d_simulator.Continuous1dSimulator(
         var_a, var_o)
     estimator = continuous1d_kalman_filter.Continuous1dKalmanfilter(
-        var_a, var_o, var_s, simulator.landmarks)
+         alpha, beta, gamma, simulator.landmarks)
     goals = [4, 0]
     controller = continuous1d_kalman_filter.Continuous1dControllor(
-        goals, var_s, allowable_range)
-    p_s_bar = random.gauss(0, 0)
+        goals, allowable_range)
     s = 0
     t = 0
 
@@ -93,9 +99,10 @@ if __name__ == "__main__":
         o = simulator.get_o()
         o_log.append(o[0])
         print "o =", o
-        p_s = estimator.update_p_s(p_s_bar, o)
-        determined_s = controller.determine_s(p_s)
+        mu, alpha = estimator.update_p_s(mu_bar, alpha_bar, o)
+        determined_s = controller.determine_s(mu, alpha**-1)
         determined_s_log.append(determined_s)
+        show_distribution(mu, alpha, "after observation")
 
         print "detemined_s =", determined_s
         print "          s =", s
@@ -112,7 +119,8 @@ if __name__ == "__main__":
         actual_s_log.append(s)
         print "s =", s
         t = t + 1
-        p_s_bar = estimator.update_p_s_bar(p_s, a)
+        mu_bar, alpha_bar = estimator.update_p_s_bar(mu, a)
+
     show_result(actual_s_log, "actual s", "g--x")
     show_result(determined_s_log, "determined s", "-+")
     show_merged_result(actual_s_log, determined_s_log)
