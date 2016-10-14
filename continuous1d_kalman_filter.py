@@ -6,7 +6,6 @@ Created on Fri Sep 09 19:08:12 2016
 """
 
 import numpy as np
-from scipy.stats import norm
 import random
 import bayes_filter
 
