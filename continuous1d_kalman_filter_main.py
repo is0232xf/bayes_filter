@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Sep 28 11:07:10 2016
+Created on Wed Oct 12 20:55:54 2016
 
 @author: Fujiichang
 """
 
 import math
-import random
+import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import norm
 import continuous1d_kalman_filter
 import continuous1d_simulator
 
