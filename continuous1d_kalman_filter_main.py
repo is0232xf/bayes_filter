@@ -56,6 +56,20 @@ def show_merged_result(s, determined_s):
     plt.show()
 
 
+def show_distribution(mu, sigma, title):
+    x = np.linspace(-1, 5, 100)
+    p = norm(mu, sigma)
+#    plt.xlim(-1, 5)
+    plt.grid()
+    plt.title(title)
+    plt.rcParams["font.size"] = 24
+    plt.tight_layout()
+    plt.xlabel("state")
+    plt.ylabel("prediction")
+    plt.plot(x,p.pdf(x))
+    plt.show()
+
+
 def calculate_rms(actual_s_log, determined_s_log):
     accidental_error = []
     for t in range(len(actual_s_log)):
