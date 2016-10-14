@@ -46,20 +46,18 @@ class Continuous1dControllor(object):
 
 
 class Continuous1dKalmanfilter(object):
-    def __init__(self, var_a, var_o, var_s, landmarks):
-        self.std_a = var_a ** 0.5
-        self.std_o = var_o ** 0.5
-        self.std_s = var_s ** 0.5
+    def __init__(self, alpha, beta, gamma, landmarks):
+        self.alpha = alpha
+        self.beta = beta
+        self.gamma = gamma
         self.landmarks = np.array(landmarks).reshape(-1, 1)
 
-    def update_p_s_bar(self, p_s, a):
-        std_s_bar = (self.std_s+self.std_a)**-1
-        p_s_bar = random.gauss(p_s+a, std_s_bar)
-        return p_s_bar
+    def update_p_s_bar(self, mu, a):
+        mu_bar = mu + a
+        alpha_bar = (self.alpha**-1 + self.beta**-1)**-1
+        return mu_bar, alpha_bar
 
-    def update_p_s(self, p_s_bar, o):
-        std_s_bar = (self.std_s+self.std_a)**-1
-        precision_o = self.std_o**-1 + std_s_bar
-        p_s = random.gauss((self.std_o**1*o[0]+std_s_bar*p_s_bar)/precision_o,
-                           (self.std_o**-1+std_s_bar)**-1)
-        return p_s
+    def update_p_s(self, mu_bar, alpha_bar, o):
+        mu = (self.gamma*(-o[0]) + alpha_bar*mu_bar) / (self.gamma + alpha_bar)
+        alpha = self.gamma + alpha_bar
+        return mu, alpha
