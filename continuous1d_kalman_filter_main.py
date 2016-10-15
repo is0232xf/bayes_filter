@@ -59,8 +59,8 @@ def show_merged_result(s, determined_s):
 
 def show_distribution(mu, sigma, title):
     x = np.linspace(-1, 5, 100)
-    p = norm(mu, sigma)
-#    plt.xlim(-1, 5)
+    p = norm(mu, sigma**-0.5)
+    plt.xlim(-1, 5)
     plt.grid()
     plt.title(title)
     plt.rcParams["font.size"] = 24
