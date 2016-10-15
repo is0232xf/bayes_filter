@@ -32,7 +32,6 @@ def show_result(s, title, line_type):
     plt.xlim(-1, 5)
     plt.grid()
     plt.title(title)
-    plt.rcParams["font.size"] = 24
     plt.tight_layout()
     plt.gca().invert_yaxis()
     plt.xlabel("state")
@@ -44,7 +43,6 @@ def show_result(s, title, line_type):
 def show_merged_result(s, determined_s):
     plt.xlim(-1, 5)
     plt.title("merged result")
-    plt.rcParams["font.size"] = 24
     plt.tight_layout()
     plt.gca().invert_yaxis()
     plt.xlabel("state")
@@ -63,11 +61,10 @@ def show_distribution(mu, sigma, title):
     plt.xlim(-1, 5)
     plt.grid()
     plt.title(title)
-    plt.rcParams["font.size"] = 24
     plt.tight_layout()
     plt.xlabel("state")
     plt.ylabel("prediction")
-    plt.plot(x,p.pdf(x))
+    plt.plot(x, p.pdf(x))
     plt.show()
 
 
