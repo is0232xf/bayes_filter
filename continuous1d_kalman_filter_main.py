@@ -13,21 +13,6 @@ import continuous1d_kalman_filter
 import continuous1d_simulator
 
 
-def show_particle_distribution(particle, s, determined_s, title,
-                               ylabel="density"):
-    plt.plot(determined_s, 0.2, 'o', markersize=20, label="determined_s")
-    plt.plot(s, 0.2, 'r*', markersize=20, label="actual_s")
-    plt.legend(loc='upper right', fontsize=15, numpoints=1)
-    plt.grid()
-    plt.hist(particle, bins=20, normed=True, histtype='stepfilled')
-    plt.title(title)
-    plt.xlabel("state")
-    plt.ylabel(ylabel)
-    plt.xlim(-1, 5)
-    plt.ylim(0, 2)
-    plt.show()
-
-
 def show_result(s, title, line_type):
     plt.xlim(-1, 5)
     plt.grid()
@@ -55,16 +40,18 @@ def show_merged_result(s, determined_s):
     plt.show()
 
 
-def show_distribution(mu, sigma, title):
+def show_distribution(mu, sigma, s, title):
     x = np.linspace(-1, 5, 100)
     p = norm(mu, sigma**-0.5)
-    plt.xlim(-1, 5)
-    plt.grid()
-    plt.title(title)
-    plt.tight_layout()
+    plt.plot(x, p.pdf(x))
+    plt.plot(mu, 0.2, 'o', markersize=20, label="determined_s")
+    plt.plot(s, 0.2, 'r*', markersize=20, label="actual_s")
     plt.xlabel("state")
     plt.ylabel("prediction")
-    plt.plot(x, p.pdf(x))
+    plt.grid()
+    plt.title(title)
+    plt.xlim(-1, 5)
+    plt.tight_layout()
     plt.show()
 
 
@@ -89,7 +76,7 @@ if __name__ == "__main__":
     # gamma is precision of observation model variance
     gamma = (std_o ** 2) ** -1
     mu_bar = 0
-    alpha_bar = 0.05
+    alpha_bar = 1 / 0.05
     allowable_range = 0.3
     o_log = []
     determined_s_log = []
@@ -108,13 +95,14 @@ if __name__ == "__main__":
 
     while True:
         print "step:", t, "##########################"
+        show_distribution(mu_bar, alpha_bar, s, "before observation")
         o = simulator.get_o()
         o_log.append(o[0])
         print "o =", o
         mu, alpha = estimator.update_p_s(mu_bar, alpha_bar, o)
-        determined_s = controller.determine_s(mu, alpha**-1)
+        determined_s = mu
         determined_s_log.append(determined_s)
-        show_distribution(mu, alpha, "after observation")
+        show_distribution(mu, alpha, s, "after observation")
 
         print "detemined_s =", determined_s
         print "          s =", s
@@ -132,6 +120,7 @@ if __name__ == "__main__":
         print "s =", s
         t = t + 1
         mu_bar, alpha_bar = estimator.update_p_s_bar(mu, a)
+        print "mu_bar =", mu_bar
 
     show_result(actual_s_log, "actual s", "g--x")
     show_result(determined_s_log, "determined s", "-+")
