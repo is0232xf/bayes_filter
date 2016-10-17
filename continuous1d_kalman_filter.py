@@ -16,7 +16,7 @@ class Continuous1dControllor(object):
         self.allowable_range = allowable_range
 
     def determine_s(self, mu, alpha):
-        determined_s = random.gauss(mu, alpha)
+        determined_s = mu
         return determined_s
 
     def determine_next_goal(self, determined_s):
