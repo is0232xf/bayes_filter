@@ -51,6 +51,7 @@ def show_distribution(mu, sigma, s, title):
     plt.grid()
     plt.title(title)
     plt.xlim(-1, 5)
+    plt.ylim(0, 5)
     plt.tight_layout()
     plt.show()
 
@@ -100,6 +101,8 @@ if __name__ == "__main__":
         o_log.append(o[0])
         print "o =", o
         mu, alpha = estimator.update_p_s(mu_bar, alpha_bar, o)
+        print "mu =", mu
+        print "alpha =", alpha
         determined_s = mu
         determined_s_log.append(determined_s)
         show_distribution(mu, alpha, s, "after observation")
@@ -121,6 +124,7 @@ if __name__ == "__main__":
         t = t + 1
         mu_bar, alpha_bar = estimator.update_p_s_bar(mu, a)
         print "mu_bar =", mu_bar
+        print "alpha_bar =", alpha_bar
 
     show_result(actual_s_log, "actual s", "g--x")
     show_result(determined_s_log, "determined s", "-+")
