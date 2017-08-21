@@ -83,6 +83,7 @@ def calculate_ratio_of_particle(particle):
             particle_ratio[i] = particle_counter[i] / float(len(particle))
         return particle_ratio
 
+
 if __name__ == "__main__":
     o_log = []
     determined_s_log = []
